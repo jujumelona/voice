@@ -2,19 +2,19 @@
   "fast": {
     "asr": "whisper",
     "translation": "argos",
-    "decoder": "voxcpm2",
-    "purpose": "real-time calls"
+    "decoder": "qwen3-tts",
+    "purpose": "fast CPU call mode"
   },
   "balanced": {
     "asr": "faster-whisper",
     "translation": "argos",
-    "decoder": "voxcpm2",
-    "purpose": "real-time and quality balance"
+    "decoder": "auto",
+    "purpose": "better ASR while keeping call-mode latency"
   },
   "quality": {
     "asr": "faster-whisper",
     "translation": "marian",
-    "decoder": "voxcpm2",
-    "purpose": "quality after utterance end"
+    "decoder": "auto",
+    "purpose": "higher-quality utterance-end translation"
   }
 }
