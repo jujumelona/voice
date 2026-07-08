@@ -1,0 +1,52 @@
+{
+  "asr": [
+    {
+      "name": "whisper.cpp",
+      "license": "MIT",
+      "source": "https://github.com/ggml-org/whisper.cpp",
+      "weights_note": "Use OpenAI Whisper converted ggml/gguf weights. Verify the selected model file license before redistribution.",
+      "expected_path": "VOICE_BRIDGE_MODEL_ROOT/whisper"
+    }
+  ],
+  "translation": [
+    {
+      "name": "Marian NMT",
+      "license": "MIT for engine",
+      "source": "https://github.com/marian-nmt/marian",
+      "weights_note": "Translation model weights are model-specific. Do not redistribute until the exact model card license is checked.",
+      "expected_path": "VOICE_BRIDGE_MODEL_ROOT/marian"
+    },
+    {
+      "name": "Argos Translate",
+      "license": "MIT or CC0",
+      "source": "https://github.com/argosopentech/argos-translate",
+      "weights_note": "Argos language packages are model artifacts. Do not commit downloaded packages; keep them under VOICE_BRIDGE_MODEL_ROOT/argos or user cache.",
+      "expected_path": "VOICE_BRIDGE_MODEL_ROOT/argos"
+    }
+  ],
+  "speaker_encoder": [
+    {
+      "name": "WeSpeaker ERes2Net-large",
+      "license": "Apache-2.0",
+      "source": "https://github.com/wenet-e2e/wespeaker",
+      "weights_note": "Use Voice Bridge's lightweight WeSpeaker ERes2Net runner via --eres2net. Runtime is pinned to Python 3.11 + torch/torchaudio 2.5.1. Optional avg_model.pt/config.yaml can be placed under VOICE_BRIDGE_MODEL_ROOT/speaker/wespeaker/eres2net-large. Do not commit weights.",
+      "expected_path": "VOICE_BRIDGE_MODEL_ROOT/wespeaker"
+    }
+  ],
+  "speech_decoder": [
+    {
+      "name": "VoxCPM2",
+      "license": "Apache-2.0",
+      "source": "https://github.com/OpenBMB/VoxCPM",
+      "weights_note": "Use openbmb/VoxCPM2 through the voxcpm package. Keep model weights under VOICE_BRIDGE_MODEL_ROOT/voxcpm2 or the Hugging Face cache and do not commit weights.",
+      "expected_path": "VOICE_BRIDGE_MODEL_ROOT/voxcpm2"
+    },
+    {
+      "name": "Qwen3-TTS 0.6B Base",
+      "license": "Apache-2.0",
+      "source": "https://github.com/QwenLM/Qwen3-TTS",
+      "weights_note": "Use Qwen/Qwen3-TTS-12Hz-0.6B-Base through a separate qwen-tts runtime. Keep model weights under VOICE_BRIDGE_MODEL_ROOT/qwen3-tts/0.6B-base and do not commit weights.",
+      "expected_path": "VOICE_BRIDGE_MODEL_ROOT/qwen3-tts/0.6B-base"
+    }
+  ]
+}

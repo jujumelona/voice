@@ -1,0 +1,10 @@
+Voice Engine Speech Translation Bridge
+Copyright 2026
+
+This project includes or references software developed by:
+- OpenBMB (VoxCPM2) - Apache-2.0 License
+- ggml-org (whisper.cpp) - MIT License
+- wenet-e2e (WeSpeaker) - Apache-2.0 License
+- argosopentech (Argos Translate) - MIT License
+- marian-nmt (Marian NMT) - MIT License
+- sounddevice / PortAudio - MIT / BSD Licenses

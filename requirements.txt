@@ -1,0 +1,20 @@
+# Verified for Python 3.11 on Windows.
+# Checked with: I:\Python311\python.exe -m pip index versions <package>
+numpy==2.4.6
+librosa==0.11.0
+soundfile==0.14.0
+sounddevice==0.5.5
+faster-whisper==1.2.1
+ctranslate2==4.8.1
+onnxruntime==1.27.0
+tokenizers==0.22.2
+huggingface-hub==1.22.0
+argostranslate==1.11.0
+stanza==1.10.1
+spacy==3.8.14
+sentencepiece==0.2.1
+sacremoses==0.1.1
+torch==2.12.1
+tqdm==4.68.4
+voxcpm==2.0.3
+transformers==5.13.0

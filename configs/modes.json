@@ -1,0 +1,20 @@
+{
+  "fast": {
+    "asr": "whisper",
+    "translation": "argos",
+    "decoder": "voxcpm2",
+    "purpose": "real-time calls"
+  },
+  "balanced": {
+    "asr": "faster-whisper",
+    "translation": "argos",
+    "decoder": "voxcpm2",
+    "purpose": "real-time and quality balance"
+  },
+  "quality": {
+    "asr": "faster-whisper",
+    "translation": "marian",
+    "decoder": "voxcpm2",
+    "purpose": "quality after utterance end"
+  }
+}

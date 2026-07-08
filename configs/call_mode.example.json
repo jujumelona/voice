@@ -1,0 +1,21 @@
+{
+  "mode": "translated_only_call",
+  "outbound": {
+    "source_microphone": "Your physical microphone",
+    "call_input_virtual_mic": "VB-CABLE / virtual microphone",
+    "send_raw_microphone_to_call": false,
+    "target_language": "en"
+  },
+  "inbound": {
+    "call_output_loopback": "Call app speaker / WASAPI loopback",
+    "local_monitor_output": "Your headphones",
+    "send_translated_inbound_back_to_call": false,
+    "target_language": "ko"
+  },
+  "safety": {
+    "require_headphones": true,
+    "mute_physical_mic_in_call_app": true,
+    "block_if_raw_mic_enabled": true
+  }
+}
+
