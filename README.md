@@ -173,6 +173,28 @@ Audio routing
   translated speech to local headphones.
 ```
 
+## Runtime Scheduling
+
+```text
+direction=both
+  outbound and inbound run in separate threads
+
+live audio
+  microphone/call audio capture uses non-blocking audio callbacks
+  output playback uses a buffered callback stream
+
+per direction
+  ASR keeps reading input audio
+  final utterances are queued to a synthesis worker
+  translation + speech decoder + voice adapter run on that worker
+  speaker profile updates run at a low rate and can run asynchronously
+
+speech output
+  Qwen3-TTS keeps a persistent worker process loaded
+  VoxCPM2 keeps the model loaded after first use
+  B_spectral_delta_080 adapts audio in streaming blocks
+```
+
 ## Install
 
 ```powershell
