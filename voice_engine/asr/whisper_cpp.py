@@ -104,6 +104,8 @@ class WhisperCppStreamingASR(StreamingASRAdapter):
             for speech_samples, is_final in events:
                 if len(speech_samples) == 0:
                     continue
+                if not is_final:
+                    continue
                 transcript = self.batch_asr.transcribe_samples(speech_samples)
                 yield TranscriptEvent(
                     text=transcript.text,
