@@ -54,48 +54,58 @@ CPU command uses `fast`.
 
 ## Supported Languages
 
-Speech output depends on the selected mode and device:
+A language is listed here only when the whole pipeline can handle it:
+
+```text
+ASR language
++ translation package/model
++ speech decoder output language
+```
+
+The default install only downloads these Argos translation pairs:
+
+```text
+en:ko
+ko:en
+```
+
+So the default ready-to-run pair is English <-> Korean. Install more translation
+pairs before using other languages.
+
+Full-pipeline language set by mode:
 
 ```text
 fast
-  Speech decoder: Qwen3-TTS 0.6B
-  Speech languages: zh, en, ja, ko, de, fr, ru, pt, es, it
+  ASR: whisper.cpp
+  Translation: Argos Translate
+  Speech: Qwen3-TTS 0.6B
+  Languages if Argos pair is installed:
+    zh, en, ja, ko, de, fr, ru, pt, es, it
 
 balanced
-  Speech decoder: auto
-  CPU speech languages: zh, en, ja, ko, de, fr, ru, pt, es, it
-  CUDA speech languages: ar, my, zh, da, nl, en, fi, fr, de, el,
-                         he, hi, id, it, ja, km, ko, lo, ms, no,
-                         pl, pt, ru, es, sw, sv, tl, th, tr, vi
+  ASR: faster-whisper
+  Translation: Argos Translate
+  CPU speech: Qwen3-TTS 0.6B
+  CPU languages if Argos pair is installed:
+    zh, en, ja, ko, de, fr, ru, pt, es, it
+  CUDA speech: VoxCPM2
+  CUDA languages if Argos pair is installed:
+    ar, zh, da, nl, en, fi, fr, de, el, he, hi, id, it,
+    ja, ko, ms, pl, pt, ru, es, sw, sv, tl, th, tr, vi
 
 quality
-  Speech decoder: auto
-  CPU speech languages: zh, en, ja, ko, de, fr, ru, pt, es, it
-  CUDA speech languages: ar, my, zh, da, nl, en, fi, fr, de, el,
-                         he, hi, id, it, ja, km, ko, lo, ms, no,
-                         pl, pt, ru, es, sw, sv, tl, th, tr, vi
+  ASR: faster-whisper
+  Translation: Marian
+  Speech: auto
+  Languages:
+    installed Marian model pair
+    intersected with Qwen3-TTS on CPU or VoxCPM2 on CUDA
 ```
 
-Qwen3-TTS language names:
-
-```text
-zh  Chinese
-en  English
-ja  Japanese
-ko  Korean
-de  German
-fr  French
-ru  Russian
-pt  Portuguese
-es  Spanish
-it  Italian
-```
-
-VoxCPM2 CUDA language names:
+Language names used above:
 
 ```text
 ar  Arabic
-my  Burmese
 zh  Chinese
 da  Danish
 nl  Dutch
@@ -109,11 +119,8 @@ hi  Hindi
 id  Indonesian
 it  Italian
 ja  Japanese
-km  Khmer
 ko  Korean
-lo  Lao
 ms  Malay
-no  Norwegian
 pl  Polish
 pt  Portuguese
 ru  Russian
@@ -125,18 +132,6 @@ th  Thai
 tr  Turkish
 vi  Vietnamese
 ```
-
-The full call pipeline also needs an installed translation package for the
-source and target pair. The default install downloads:
-
-```text
-en:ko
-ko:en
-```
-
-`fast` and `balanced` use Argos Translate by default, so install the Argos pair
-you want. `quality` uses Marian, so its translation languages depend on the
-Marian model files you place under the runtime model directory.
 
 Install more Argos pairs with one command:
 
