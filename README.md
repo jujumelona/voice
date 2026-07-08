@@ -54,7 +54,29 @@ CPU command uses `fast`.
 
 ## Supported Languages
 
-Qwen3-TTS speech output supports these target languages:
+Speech output depends on the selected mode and device:
+
+```text
+fast
+  Speech decoder: Qwen3-TTS 0.6B
+  Speech languages: zh, en, ja, ko, de, fr, ru, pt, es, it
+
+balanced
+  Speech decoder: auto
+  CPU speech languages: zh, en, ja, ko, de, fr, ru, pt, es, it
+  CUDA speech languages: ar, my, zh, da, nl, en, fi, fr, de, el,
+                         he, hi, id, it, ja, km, ko, lo, ms, no,
+                         pl, pt, ru, es, sw, sv, tl, th, tr, vi
+
+quality
+  Speech decoder: auto
+  CPU speech languages: zh, en, ja, ko, de, fr, ru, pt, es, it
+  CUDA speech languages: ar, my, zh, da, nl, en, fi, fr, de, el,
+                         he, hi, id, it, ja, km, ko, lo, ms, no,
+                         pl, pt, ru, es, sw, sv, tl, th, tr, vi
+```
+
+Qwen3-TTS language names:
 
 ```text
 zh  Chinese
@@ -69,6 +91,41 @@ es  Spanish
 it  Italian
 ```
 
+VoxCPM2 CUDA language names:
+
+```text
+ar  Arabic
+my  Burmese
+zh  Chinese
+da  Danish
+nl  Dutch
+en  English
+fi  Finnish
+fr  French
+de  German
+el  Greek
+he  Hebrew
+hi  Hindi
+id  Indonesian
+it  Italian
+ja  Japanese
+km  Khmer
+ko  Korean
+lo  Lao
+ms  Malay
+no  Norwegian
+pl  Polish
+pt  Portuguese
+ru  Russian
+es  Spanish
+sw  Swahili
+sv  Swedish
+tl  Tagalog
+th  Thai
+tr  Turkish
+vi  Vietnamese
+```
+
 The full call pipeline also needs an installed translation package for the
 source and target pair. The default install downloads:
 
@@ -76,6 +133,10 @@ source and target pair. The default install downloads:
 en:ko
 ko:en
 ```
+
+`fast` and `balanced` use Argos Translate by default, so install the Argos pair
+you want. `quality` uses Marian, so its translation languages depend on the
+Marian model files you place under the runtime model directory.
 
 Install more Argos pairs with one command:
 
