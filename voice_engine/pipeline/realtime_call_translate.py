@@ -3,6 +3,7 @@ from __future__ import annotations
 import argparse
 import json
 import platform
+import queue
 import shutil
 import threading
 import uuid
@@ -22,7 +23,7 @@ from voice_engine.mt.argos import ArgosTranslation
 from voice_engine.mt.marian import MarianTranslation
 from voice_engine.paths import model_path
 from voice_engine.pipeline.modes import MODES, get_mode
-from voice_engine.pipeline.types import Transcript, TranslationEvent, VoiceDecoderInput
+from voice_engine.pipeline.types import Transcript, TranscriptEvent, TranslationEvent, VoiceDecoderInput
 from voice_engine.speaker.speaker_profile import (
     extract_speaker_profile_from_samples,
     extract_speaker_profile_from_wav,
@@ -254,6 +255,11 @@ def run_live_call(
         voice_adapter_sample_rate=voice_adapter_sample_rate,
     )
 
+    turn_queue: queue.Queue[TranscriptEvent | object] | None = None
+    worker_stop: object | None = None
+    synth_thread: threading.Thread | None = None
+    async_profile: _AsyncSpeakerProfileUpdater | None = None
+
     audio.start()
     try:
         speaker_profile = None
@@ -267,25 +273,26 @@ def run_live_call(
             enabled=not speaker_profile_sync_first,
         )
 
-        for event in asr.transcribe_samples_stream(audio.stream_samples()):
-            if not event.text.strip():
-                continue
+        turn_queue = queue.Queue(maxsize=2)
+        worker_stop = object()
+        worker_errors: list[BaseException] = []
 
-            if not event.is_final:
-                print(f"[partial] {event.text}", flush=True)
-                continue
+        def synthesize_worker() -> None:
+            while True:
+                item = turn_queue.get()
+                try:
+                    if item is worker_stop:
+                        return
+                    _process_final_event(item)
+                except BaseException as exc:
+                    worker_errors.append(exc)
+                finally:
+                    turn_queue.task_done()
 
-            print(f"\n[source] {event.text}", flush=True)
-            translation = translator.translate(
-                Transcript(text=event.text, language=event.language),
-                target_language,
-            )
-            print(f"[translated] {translation.text}", flush=True)
-
-            content = content_units_from_translation(translation)
-
+        def _process_final_event(event: TranscriptEvent) -> None:
+            nonlocal speaker_profile, last_update_sec
             if event.samples is None or len(event.samples) == 0:
-                continue
+                return
 
             event_samples = _mono_float_array(event.samples)
             event_sample_list = event_samples.astype(np.float32).tolist()
@@ -333,7 +340,16 @@ def run_live_call(
                 )
 
             if speaker_profile is None:
-                continue
+                return
+
+            print(f"\n[source] {event.text}", flush=True)
+            translation = translator.translate(
+                Transcript(text=event.text, language=event.language),
+                target_language,
+            )
+            print(f"[translated] {translation.text}", flush=True)
+
+            content = content_units_from_translation(translation)
 
             style_tokens = extract_utterance_style_trace_from_samples(
                 samples=event_sample_list,
@@ -345,7 +361,7 @@ def run_live_call(
             )
 
             if decoder is None:
-                continue
+                return
 
             request = VoiceDecoderInput(
                 content=content,
@@ -363,9 +379,32 @@ def run_live_call(
                 if test_artifacts is not None:
                     test_artifacts.write_chunk(chunk)
                 audio.play(chunk)
+
+        synth_thread = threading.Thread(target=synthesize_worker, daemon=True)
+        synth_thread.start()
+
+        for event in asr.transcribe_samples_stream(audio.stream_samples()):
+            if worker_errors:
+                raise worker_errors[0]
+            if not event.text.strip():
+                continue
+
+            if not event.is_final:
+                print(f"[partial] {event.text}", flush=True)
+                continue
+
+            turn_queue.put(event)
     finally:
+        if turn_queue is not None and worker_stop is not None:
+            try:
+                turn_queue.put(worker_stop, timeout=0.5)
+            except Exception:
+                pass
+        if synth_thread is not None and synth_thread.is_alive():
+            synth_thread.join(timeout=0.5)
         try:
-            async_profile.close()
+            if async_profile is not None:
+                async_profile.close()
         except Exception:
             pass
         audio.stop()
