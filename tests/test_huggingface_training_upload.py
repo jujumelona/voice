@@ -57,6 +57,7 @@ def test_epoch_readme_states_japanese_song_count() -> None:
 
     assert "epoch 7" in text.lower()
     assert "20 Japanese songs" in text
+    assert "학습 데이터: **일본곡 20곡 (20 Japanese songs)**" in text
     assert "source songs are not uploaded" in text
 
 
@@ -125,6 +126,13 @@ def test_upload_training_artifacts_uploads_epochs_final_and_model_cards(tmp_path
     )
     manifest = json.loads(manifest_entry["uploaded_text"])
     assert manifest["training_dataset"]["description"] == "20 Japanese songs"
+    serialized = json.dumps(manifest, ensure_ascii=False)
+    assert str(tmp_path) not in serialized
+    assert {item["source_name"] for item in manifest["epochs"]} == {
+        "epoch-1",
+        "epoch_2",
+    }
+    assert manifest["final_artifacts"] == ["outputs"]
 
 
 def test_uploader_does_not_upload_dataset_or_raw_audio_dirs(tmp_path) -> None:
