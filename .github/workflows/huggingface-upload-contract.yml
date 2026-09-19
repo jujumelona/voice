@@ -1,0 +1,38 @@
+name: Hugging Face upload contract
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "scripts/upload_training_to_huggingface.py"
+      - "notebooks/upload_training_to_hf.ipynb"
+      - "tests/test_huggingface_training_upload.py"
+      - "README.md"
+      - ".github/workflows/huggingface-upload-contract.yml"
+  pull_request:
+    paths:
+      - "scripts/upload_training_to_huggingface.py"
+      - "notebooks/upload_training_to_hf.ipynb"
+      - "tests/test_huggingface_training_upload.py"
+      - "README.md"
+      - ".github/workflows/huggingface-upload-contract.yml"
+
+jobs:
+  upload-contract:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install focused test dependencies
+        run: python -m pip install "huggingface-hub==1.22.0" "pytest>=8,<9"
+
+      - name: Compile uploader
+        run: python -m py_compile scripts/upload_training_to_huggingface.py
+
+      - name: Run Hugging Face upload contract tests
+        run: python -m pytest -q tests/test_huggingface_training_upload.py
