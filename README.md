@@ -260,10 +260,10 @@ checkpoints/epoch-* -> epochs/epoch-XXXX/
 outputs/            -> final/
 ```
 
-Every uploaded epoch folder receives its own `README.md` stating that the
-training data consisted of **20 Japanese songs**. The root Hugging Face model
-card says the same and lists all uploaded epochs. Original source songs are not
-uploaded.
+Every uploaded epoch folder receives its own `README.md` with the explicit note
+**`학습 데이터: 일본곡 20곡 (20 Japanese songs)`**. The root Hugging Face
+model card contains the same statement and lists all uploaded epochs. Original
+source songs are not uploaded.
 
 The default Hub repository is:
 
