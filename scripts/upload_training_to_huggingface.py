@@ -253,7 +253,7 @@ def _upload_final_dirs(
                 path_in_repo=f"final/{path.name}",
                 commit_message=f"Upload completed artifact {path.name}",
             )
-        uploaded.append(str(path))
+        uploaded.append(path.name)
     return uploaded
 
 
@@ -323,7 +323,7 @@ def upload_training_artifacts(
         "epochs": [
             {
                 "epoch": artifact.epoch,
-                "local_path": str(artifact.path),
+                "source_name": artifact.path.name,
                 "remote_path": artifact.remote_dir,
             }
             for artifact in epochs
