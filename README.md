@@ -242,3 +242,44 @@ I:\voice_bridge\models
 ```
 
 More runtime details are in `docs/LOCAL_RUNTIME.md`.
+
+
+## Hugging Face Training Upload
+
+After training finishes, use the Colab notebook:
+
+```text
+notebooks/upload_training_to_hf.ipynb
+```
+
+The upload cell asks for a **masked Hugging Face write token**. As soon as the
+token is entered, it automatically:
+
+```text
+checkpoints/epoch-* -> epochs/epoch-XXXX/
+outputs/            -> final/
+```
+
+Every uploaded epoch folder receives its own `README.md` stating that the
+training data consisted of **20 Japanese songs**. The root Hugging Face model
+card says the same and lists all uploaded epochs. Original source songs are not
+uploaded.
+
+The default Hub repository is:
+
+```text
+<your Hugging Face username>/voice-jp20
+```
+
+To use another repository or paths from a terminal:
+
+```powershell
+python scripts\upload_training_to_huggingface.py `
+  --repo-id YOUR_NAME/YOUR_MODEL `
+  --checkpoint-root checkpoints `
+  --final-dir outputs
+```
+
+If `HF_TOKEN` is not already set, the script opens the same masked token input.
+The token is passed directly to the Hugging Face client and is not written into
+the repository.
