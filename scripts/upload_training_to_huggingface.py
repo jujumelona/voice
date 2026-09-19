@@ -181,7 +181,13 @@ def _upload_text(
         tmp.unlink(missing_ok=True)
 
 
-def _upload_epoch(api: HfApi, *, repo_id: str, artifact: EpochArtifact) -> None:
+def _upload_epoch(
+    api: HfApi,
+    *,
+    repo_id: str,
+    artifact: EpochArtifact,
+    song_count: int = DEFAULT_SONG_COUNT,
+) -> None:
     remote = artifact.remote_dir
     if artifact.path.is_dir():
         api.upload_folder(
@@ -207,7 +213,7 @@ def _upload_epoch(api: HfApi, *, repo_id: str, artifact: EpochArtifact) -> None:
         api,
         repo_id=repo_id,
         path_in_repo=f"{remote}/README.md",
-        text=epoch_readme(artifact.epoch),
+        text=epoch_readme(artifact.epoch, song_count=song_count),
         commit_message=f"Document epoch {artifact.epoch}",
     )
 
@@ -224,7 +230,8 @@ def _upload_final_dirs(
         if not path.exists():
             continue
         if not _safe_upload_path(path):
-            raise RuntimeError(f"Refusing to upload unsafe final artifact path: {path}")
+            print(f"Skipping raw/secret training path: {path}")
+            continue
 
         if path.is_dir():
             api.upload_folder(
@@ -280,7 +287,12 @@ def upload_training_artifacts(
 
     epochs = discover_epoch_artifacts(checkpoint_root)
     for artifact in epochs:
-        _upload_epoch(client, repo_id=resolved_repo_id, artifact=artifact)
+        _upload_epoch(
+            client,
+            repo_id=resolved_repo_id,
+            artifact=artifact,
+            song_count=song_count,
+        )
 
     uploaded_final = _upload_final_dirs(
         client,
