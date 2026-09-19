@@ -14,7 +14,7 @@ from huggingface_hub import HfApi
 
 DEFAULT_SONG_COUNT = 20
 DEFAULT_REPO_NAME = "voice-jp20"
-_AUDIO_SUFFIXES = {".wav", ".mp3", ".flac", ".ogg", ".m4a", ".aac"}
+DEFAULT_FINAL_DIRS = ("outputs", "final", "exports", "artifacts", "trained_model")
 _SECRET_NAMES = {
     ".env",
     "token",
@@ -97,6 +97,7 @@ This checkpoint is from **epoch {epoch}**.
 
 ## Training data
 
+- 학습 데이터: **일본곡 {song_count}곡 ({song_count} Japanese songs)**
 - Dataset composition: **{song_count} Japanese songs**
 - Language/music domain: Japanese songs
 - This repository contains model/checkpoint artifacts only; the source songs are not uploaded here.
@@ -131,6 +132,8 @@ tags:
 ---
 
 # Voice JP20 training artifacts
+
+학습 데이터: **일본곡 {song_count}곡 ({song_count} Japanese songs)**.
 
 These artifacts were trained using **{song_count} Japanese songs**.
 
@@ -259,7 +262,7 @@ def upload_training_artifacts(
     token: str,
     repo_id: str | None = None,
     checkpoint_root: str | Path = "checkpoints",
-    final_dirs: Iterable[str | Path] = ("outputs",),
+    final_dirs: Iterable[str | Path] = DEFAULT_FINAL_DIRS,
     private: bool = False,
     song_count: int = DEFAULT_SONG_COUNT,
     api: HfApi | None = None,
@@ -380,7 +383,7 @@ def main() -> None:
         token=token,
         repo_id=args.repo_id or None,
         checkpoint_root=args.checkpoint_root,
-        final_dirs=args.final_dirs or ("outputs",),
+        final_dirs=args.final_dirs or DEFAULT_FINAL_DIRS,
         private=args.private,
         song_count=args.song_count,
     )
